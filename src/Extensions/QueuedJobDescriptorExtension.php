@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SilverStripe\GarbageCollector\Extensions;
 
 use SilverStripe\Core\Extension;

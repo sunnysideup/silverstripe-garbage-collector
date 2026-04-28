@@ -2,22 +2,18 @@
 
 namespace SilverStripe\GarbageCollector\Processors;
 
+use Exception;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\Queries\SQLConditionalExpression;
 
 class SQLExpressionProcessor extends AbstractProcessor
 {
 
-    /**
+    public function __construct(/**
      * Expression to delete
-     *
-     * @var SQLConditionalExpression
      */
-    private $expression;
-
-    public function __construct(SQLConditionalExpression $expression = null, string $name = '')
+    private readonly ?SQLConditionalExpression $expression = null, string $name = '')
     {
-        $this->expression = $expression;
         parent::__construct($name);
     }
 
@@ -25,12 +21,12 @@ class SQLExpressionProcessor extends AbstractProcessor
      * Get internal SQL expression
      *
      * @return SQLConditionalExpression
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getExpression(): SQLConditionalExpression
     {
-        if (!is_a($this->expression, SQLConditionalExpression::class)) {
-            throw new \Exception(static::class . ' requires a SQLConditionalExpression provided via its constructor.');
+        if (!$this->expression instanceof SQLConditionalExpression) {
+            throw new Exception(static::class . ' requires a SQLConditionalExpression provided via its constructor.');
         }
 
         return $this->expression;
@@ -40,7 +36,7 @@ class SQLExpressionProcessor extends AbstractProcessor
      * Execute deletion of records
      *
      * @return int Number of records deleted
-     * @throws \Exception
+     * @throws Exception
      */
     public function process(): int
     {
@@ -56,18 +52,19 @@ class SQLExpressionProcessor extends AbstractProcessor
      * Get name of processor
      *
      * @return string Name of processor
-     * @throws \Exception
+     * @throws Exception
      */
     public function getName(): string
     {
-        if ($name = parent::getName()) {
+        $name = parent::getName();
+        if ($name !== '' && $name !== '0') {
             return $name;
         }
 
         // Use the 'Base Table' of the query as the Classname for Name
         $from = $this->getExpression()->getFrom();
-        if (!empty($from) && is_array($from) && count($from) > 0) {
-            $this->setName(trim(array_shift($from), '"'));
+        if (!empty($from) && is_array($from) && $from !== []) {
+            $this->setName(trim((string) array_shift($from), '"'));
         } else {
             $this->setName('UnknownName');
         }

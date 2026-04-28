@@ -17,6 +17,7 @@ use Symbiote\QueuedJobs\Services\QueuedJobService;
 if (!class_exists(QueuedJobDescriptor::class)) {
     return;
 }
+
 /**
  * @property CollectorInterface|null $collector
  * @property int|null $batchSize
@@ -48,7 +49,7 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
      */
     public function getTitle()
     {
-        return sprintf("Garbage Collection processing for all collectors");
+        return "Garbage Collection processing for all collectors";
     }
 
     public function getJobType(): int
@@ -99,6 +100,7 @@ class RecurringAllGarbageCollectorJob extends AbstractQueuedJob
         if (QueuedJobDescriptor::get()->filter($filter)->count() > 0) {
             return;
         }
+
         self::queueNextJob();
     }
 

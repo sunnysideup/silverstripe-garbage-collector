@@ -57,7 +57,7 @@ class ChangeSetCollector extends AbstractCollector
         do {
             $batch = array_splice($ids, 0, $this->config()->get('deletion_limit'));
             $collection[] = $this->getSQLQueryRecord($batch);
-        } while (!empty($ids) && count($collection) <= $this->config()->get('query_limit'));
+        } while ($ids !== [] && count($collection) <= $this->config()->get('query_limit'));
 
 
         return $collection;
@@ -75,8 +75,7 @@ class ChangeSetCollector extends AbstractCollector
             ->Rfc2822();
 
         $dataList = ChangeSet::get()
-            ->filter(['LastEdited:LessThan' => $deletionDate])
-            ->sort('ID', 'ASC')
+            ->filter(['LastEdited:LessThan' => $deletionDate])->sort(['ID' => 'ASC'])
             ->limit($this->config()->get('deletion_limit') * $this->config()->get('query_limit'));
 
         return $dataList->columnUnique('ID');

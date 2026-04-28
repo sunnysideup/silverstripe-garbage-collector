@@ -114,7 +114,7 @@ class VersionedCollector extends AbstractCollector
             $records = $this->getRecordsForDeletion([$class]);
             $versionData = $this->getVersionsForDeletion($records);
 
-            if (empty($versionData)) {
+            if ($versionData === []) {
                 continue;
             }
 
@@ -129,10 +129,10 @@ class VersionedCollector extends AbstractCollector
                             $batch = array_splice($versions, 0, $this->config()->get('deletion_version_limit'));
                             $query = $this->deleteVersionsQuery($class, $recordId, $batch);
 
-                            if ($query) {
+                            if ($query instanceof SQLExpression) {
                                 $collections[] = $query;
                             }
-                        } while (!empty($versions) && count($collections) <= $this->config()->get('query_limit'));
+                        } while ($versions !== [] && count($collections) <= $this->config()->get('query_limit'));
                     }
                 }
             }
@@ -157,13 +157,8 @@ class VersionedCollector extends AbstractCollector
                 // Skip non-versioned classes as there are no old version records to delete
                 return false;
             }
-
-            if ($class !== $singleton->baseClass()) {
-                // Skip non-base-class as subclasses are covered automatically
-                return false;
-            }
-
-            return true;
+            // Skip non-base-class as subclasses are covered automatically
+            return $class === $singleton->baseClass();
         });
     }
 
@@ -243,7 +238,7 @@ class VersionedCollector extends AbstractCollector
             // Process results
             $data = $this->processResults($class, $results);
 
-            if (count($data) === 0) {
+            if ($data === []) {
                 continue;
             }
 
@@ -336,7 +331,7 @@ class VersionedCollector extends AbstractCollector
                 // Group versions by class so it's easier to process them later
                 $data = $this->groupVersions($results);
 
-                if (count($data) === 0) {
+                if ($data === []) {
                     continue;
                 }
 
@@ -357,7 +352,7 @@ class VersionedCollector extends AbstractCollector
      */
     protected function deleteVersionsQuery(string $class, int $recordId, array $versions): ?SQLExpression
     {
-        if (count($versions) === 0) {
+        if ($versions === []) {
             // Nothing to delete
             return null;
         }
@@ -539,6 +534,6 @@ class VersionedCollector extends AbstractCollector
         }
 
         // reverse the order of versions so we delete the oldest first
-        return array_map('array_reverse', $data);
+        return array_map(array_reverse(...), $data);
     }
 }

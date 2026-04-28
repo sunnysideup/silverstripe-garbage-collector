@@ -46,20 +46,20 @@ class ObsoleteTableCollector extends AbstractCollector
         $table_prefix = $this->config()->get('table_prefix');
         $collection = [];
 
-        $tables = DB::query(sprintf('SHOW TABLES LIKE \'%s%%\'', Convert::raw2sql($table_prefix)))->column();
+        $tables = DB::query(sprintf("SHOW TABLES LIKE '%s%%'", Convert::raw2sql($table_prefix)))->column();
 
         if (empty($tables)) {
             return $collection;
         }
 
         foreach ($tables as $table) {
-            if (in_array(substr($table, strlen($table_prefix)), $this->config()->get('skip_tables'))) {
+            if (in_array(substr((string) $table, strlen((string) $table_prefix)), $this->config()->get('skip_tables'))) {
                 // If table name without prefix is in "skip_tables" config, then skip.
                 continue;
             }
 
             // Add DROP TABLE statement to collection.
-            $collection[] = new RawSQL(sprintf('DROP TABLE \'%s\'', Convert::raw2sql($table)));
+            $collection[] = new RawSQL(sprintf("DROP TABLE '%s'", Convert::raw2sql($table)));
         }
 
         return $collection;

@@ -2,22 +2,18 @@
 
 namespace SilverStripe\GarbageCollector\Processors;
 
+use Exception;
 use SilverStripe\GarbageCollector\Models\RawSQL;
 use SilverStripe\ORM\DB;
 
 class RawSQLProcessor extends AbstractProcessor
 {
 
-    /**
+    public function __construct(/**
      * Query to process
-     *
-     * @var RawSQL
      */
-    private $query;
-
-    public function __construct(RawSQL $query = null, string $name = '')
+    private readonly ?RawSQL $query = null, string $name = '')
     {
-        $this->query = $query;
         parent::__construct($name);
     }
 
@@ -25,12 +21,12 @@ class RawSQLProcessor extends AbstractProcessor
      * Get internal query
      *
      * @return RawSQL
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getQuery(): RawSQL
     {
-        if (!is_a($this->query, RawSQL::class)) {
-            throw new \Exception(static::class . ' requires a RawSQL provided via its constructor.');
+        if (!$this->query instanceof RawSQL) {
+            throw new Exception(static::class . ' requires a RawSQL provided via its constructor.');
         }
 
         return $this->query;
@@ -40,7 +36,7 @@ class RawSQLProcessor extends AbstractProcessor
      * Execute query
      *
      * @return int Always 1 as its a single SQL query being executed
-     * @throws \Exception
+     * @throws Exception
      */
     public function process(): int
     {
@@ -55,7 +51,8 @@ class RawSQLProcessor extends AbstractProcessor
      */
     public function getName(): string
     {
-        if ($name = parent::getName()) {
+        $name = parent::getName();
+        if ($name !== '' && $name !== '0') {
             return $name;
         }
 
