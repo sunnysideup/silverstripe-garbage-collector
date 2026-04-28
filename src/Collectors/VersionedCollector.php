@@ -157,6 +157,7 @@ class VersionedCollector extends AbstractCollector
                 // Skip non-versioned classes as there are no old version records to delete
                 return false;
             }
+
             // Skip non-base-class as subclasses are covered automatically
             return $class === $singleton->baseClass();
         });
