@@ -2,6 +2,7 @@
 
 namespace SilverStripe\GarbageCollector\Processors;
 
+use Override;
 use Exception;
 use SilverStripe\GarbageCollector\Models\RawSQL;
 use SilverStripe\ORM\DB;
@@ -49,6 +50,7 @@ class RawSQLProcessor extends AbstractProcessor
      *
      * @return string Name of processor
      */
+    #[Override]
     public function getName(): string
     {
         $name = parent::getName();

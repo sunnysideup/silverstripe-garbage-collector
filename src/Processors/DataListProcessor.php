@@ -2,6 +2,7 @@
 
 namespace SilverStripe\GarbageCollector\Processors;
 
+use Override;
 use Exception;
 use SilverStripe\ORM\DataList;
 
@@ -56,6 +57,7 @@ class DataListProcessor extends AbstractProcessor
      * @return string Name of processor
      * @throws Exception
      */
+    #[Override]
     public function getName(): string
     {
         $name = parent::getName();

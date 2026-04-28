@@ -2,6 +2,7 @@
 
 namespace SilverStripe\GarbageCollector\Processors;
 
+use Override;
 use Exception;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\Queries\SQLConditionalExpression;
@@ -54,6 +55,7 @@ class SQLExpressionProcessor extends AbstractProcessor
      * @return string Name of processor
      * @throws Exception
      */
+    #[Override]
     public function getName(): string
     {
         $name = parent::getName();
