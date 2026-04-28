@@ -5,7 +5,16 @@ namespace SilverStripe\GarbageCollector\Tests\Extensions;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
 use SilverStripe\GarbageCollector\Tests\CargoShip;
-use SilverStripe\ORM\ValidationException;
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: SilverStripe\ORM\ValidationException
+  * NEW: ValidationException ...  (COMPLEX)
+  * EXP: Removed deprecated class SilverStripe\\ORM\\ValidationException - renamed to ValidationException. See: https://docs.silverstripe.org/en/6/changelogs/6.0.0/
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+use ValidationException;
 use SilverStripe\Versioned\Versioned;
 use TractorCow\Fluent\Extension\FluentVersionedExtension;
 use TractorCow\Fluent\State\FluentState;

@@ -2,6 +2,9 @@
 
 namespace SilverStripe\GarbageCollector\Jobs;
 
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
+use Monolog\Handler\HandlerInterface;
 use Exception;
 use SilverStripe\GarbageCollector\CollectorInterface;
 use SilverStripe\GarbageCollector\GarbageCollectorService;
@@ -28,7 +31,7 @@ class GarbageCollectorJob extends AbstractQueuedJob
     private $service;
 
     /**
-     * @var \Monolog\Handler\HandlerInterface
+     * @var HandlerInterface
      */
     private $logger;
 
@@ -44,10 +47,10 @@ class GarbageCollectorJob extends AbstractQueuedJob
         $this->collector = $collector;
         $this->batchSize = $batchSize;
 
-        $this->logger = new \Monolog\Handler\TestHandler();
+        $this->logger = new TestHandler();
 
         $this->service = GarbageCollectorService::inst();
-        $this->service->setLogger(new \Monolog\Logger('TestLogger', [
+        $this->service->setLogger(new Logger('TestLogger', [
             $this->logger
         ]));
     }

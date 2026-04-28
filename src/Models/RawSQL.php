@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SilverStripe\GarbageCollector\Models;
 
 class RawSQL
 {
-    private $query;
-
-    public function __construct($query)
+    public function __construct(private $query)
     {
-        $this->query = $query;
     }
 
     public function setQuery($query)

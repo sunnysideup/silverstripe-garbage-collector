@@ -1,0 +1,151 @@
+diff --git a/composer.json b/composer.json
+index 2c3eea8..ea6924d 100644
+--- a/composer.json
++++ b/composer.json
+@@ -28,7 +28,7 @@
+   ],
+   "require": {
+     "php": "~8.0",
+-    "silverstripe/framework": "^4.13 | ^5"
++    "silverstripe/framework": "^6.0"
+   },
+   "require-dev": {
+     "phpunit/phpunit": "^9.6.13",
+diff --git a/src/Collectors/VersionedCollector.php b/src/Collectors/VersionedCollector.php
+index 258350a..a48ccd5 100644
+--- a/src/Collectors/VersionedCollector.php
++++ b/src/Collectors/VersionedCollector.php
+@@ -157,6 +157,7 @@ class VersionedCollector extends AbstractCollector
+                 // Skip non-versioned classes as there are no old version records to delete
+                 return false;
+             }
++
+             // Skip non-base-class as subclasses are covered automatically
+             return $class === $singleton->baseClass();
+         });
+diff --git a/src/Processors/DataListProcessor.php b/src/Processors/DataListProcessor.php
+index 38fa3c7..2577770 100644
+--- a/src/Processors/DataListProcessor.php
++++ b/src/Processors/DataListProcessor.php
+@@ -2,6 +2,7 @@
+ 
+ namespace SilverStripe\GarbageCollector\Processors;
+ 
++use Override;
+ use Exception;
+ use SilverStripe\ORM\DataList;
+ 
+@@ -56,6 +57,7 @@ class DataListProcessor extends AbstractProcessor
+      * @return string Name of processor
+      * @throws Exception
+      */
++    #[Override]
+     public function getName(): string
+     {
+         $name = parent::getName();
+diff --git a/src/Processors/RawSQLProcessor.php b/src/Processors/RawSQLProcessor.php
+index d76b576..d1b6e75 100644
+--- a/src/Processors/RawSQLProcessor.php
++++ b/src/Processors/RawSQLProcessor.php
+@@ -2,6 +2,7 @@
+ 
+ namespace SilverStripe\GarbageCollector\Processors;
+ 
++use Override;
+ use Exception;
+ use SilverStripe\GarbageCollector\Models\RawSQL;
+ use SilverStripe\ORM\DB;
+@@ -49,6 +50,7 @@ class RawSQLProcessor extends AbstractProcessor
+      *
+      * @return string Name of processor
+      */
++    #[Override]
+     public function getName(): string
+     {
+         $name = parent::getName();
+diff --git a/src/Processors/SQLExpressionProcessor.php b/src/Processors/SQLExpressionProcessor.php
+index 5d49de9..b0c9b1c 100644
+--- a/src/Processors/SQLExpressionProcessor.php
++++ b/src/Processors/SQLExpressionProcessor.php
+@@ -2,6 +2,7 @@
+ 
+ namespace SilverStripe\GarbageCollector\Processors;
+ 
++use Override;
+ use Exception;
+ use SilverStripe\ORM\DB;
+ use SilverStripe\ORM\Queries\SQLConditionalExpression;
+@@ -54,6 +55,7 @@ class SQLExpressionProcessor extends AbstractProcessor
+      * @return string Name of processor
+      * @throws Exception
+      */
++    #[Override]
+     public function getName(): string
+     {
+         $name = parent::getName();
+diff --git a/tests/php/Collectors/ChangeSetCollectorTest.php b/tests/php/Collectors/ChangeSetCollectorTest.php
+index 32aca1c..95a6190 100644
+--- a/tests/php/Collectors/ChangeSetCollectorTest.php
++++ b/tests/php/Collectors/ChangeSetCollectorTest.php
+@@ -7,7 +7,16 @@ use SilverStripe\GarbageCollector\Tests\CargoShip;
+ use SilverStripe\ORM\DataObject;
+ use SilverStripe\ORM\FieldType\DBDatetime;
+ use SilverStripe\GarbageCollector\Collectors\ChangeSetCollector;
+-use SilverStripe\ORM\ValidationException;
++
++/**
++  * ### @@@@ START REPLACEMENT @@@@ ###
++  * WHY: automated upgrade
++  * OLD: SilverStripe\ORM\ValidationException
++  * NEW: ValidationException ...  (COMPLEX)
++  * EXP: Removed deprecated class SilverStripe\\ORM\\ValidationException - renamed to ValidationException. See: https://docs.silverstripe.org/en/6/changelogs/6.0.0/
++  * ### @@@@ STOP REPLACEMENT @@@@ ###
++  */
++use ValidationException;
+ use SilverStripe\Versioned\Versioned;
+ use SilverStripe\GarbageCollector\Tests\Ship;
+ use SilverStripe\Core\Config\Config;
+diff --git a/tests/php/Collectors/VersionedCollectorTest.php b/tests/php/Collectors/VersionedCollectorTest.php
+index aa1ac20..0886169 100644
+--- a/tests/php/Collectors/VersionedCollectorTest.php
++++ b/tests/php/Collectors/VersionedCollectorTest.php
+@@ -7,7 +7,16 @@ use SilverStripe\GarbageCollector\Tests\CargoShip;
+ use SilverStripe\ORM\DataObject;
+ use SilverStripe\ORM\FieldType\DBDatetime;
+ use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
+-use SilverStripe\ORM\ValidationException;
++
++/**
++  * ### @@@@ START REPLACEMENT @@@@ ###
++  * WHY: automated upgrade
++  * OLD: SilverStripe\ORM\ValidationException
++  * NEW: ValidationException ...  (COMPLEX)
++  * EXP: Removed deprecated class SilverStripe\\ORM\\ValidationException - renamed to ValidationException. See: https://docs.silverstripe.org/en/6/changelogs/6.0.0/
++  * ### @@@@ STOP REPLACEMENT @@@@ ###
++  */
++use ValidationException;
+ use SilverStripe\Versioned\Versioned;
+ use SilverStripe\GarbageCollector\Tests\Ship;
+ use SilverStripe\Core\Config\Config;
+diff --git a/tests/php/Extensions/FluentVersionedCollectorExtensionTest.php b/tests/php/Extensions/FluentVersionedCollectorExtensionTest.php
+index cb475df..2f64488 100644
+--- a/tests/php/Extensions/FluentVersionedCollectorExtensionTest.php
++++ b/tests/php/Extensions/FluentVersionedCollectorExtensionTest.php
+@@ -5,7 +5,16 @@ namespace SilverStripe\GarbageCollector\Tests\Extensions;
+ use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
+ use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
+ use SilverStripe\GarbageCollector\Tests\CargoShip;
+-use SilverStripe\ORM\ValidationException;
++
++/**
++  * ### @@@@ START REPLACEMENT @@@@ ###
++  * WHY: automated upgrade
++  * OLD: SilverStripe\ORM\ValidationException
++  * NEW: ValidationException ...  (COMPLEX)
++  * EXP: Removed deprecated class SilverStripe\\ORM\\ValidationException - renamed to ValidationException. See: https://docs.silverstripe.org/en/6/changelogs/6.0.0/
++  * ### @@@@ STOP REPLACEMENT @@@@ ###
++  */
++use ValidationException;
+ use SilverStripe\Versioned\Versioned;
+ use TractorCow\Fluent\Extension\FluentVersionedExtension;
+ use TractorCow\Fluent\State\FluentState;

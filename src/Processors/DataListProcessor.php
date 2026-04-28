@@ -2,21 +2,18 @@
 
 namespace SilverStripe\GarbageCollector\Processors;
 
+use Override;
+use Exception;
 use SilverStripe\ORM\DataList;
 
 class DataListProcessor extends AbstractProcessor
 {
 
-    /**
+    public function __construct(/**
      * DataObject to delete
-     *
-     * @var DataList
      */
-    private $list;
-
-    public function __construct(DataList $list = null, string $name = '')
+    private readonly ?DataList $list = null, string $name = '')
     {
-        $this->list = $list;
         parent::__construct($name);
     }
 
@@ -24,12 +21,12 @@ class DataListProcessor extends AbstractProcessor
      * Get internal datalist
      *
      * @return DataList
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getList(): DataList
     {
-        if (!is_a($this->list, DataList::class)) {
-            throw new \Exception(static::class . ' requires a DataList provided via its constructor.');
+        if (!$this->list instanceof DataList) {
+            throw new Exception(static::class . ' requires a DataList provided via its constructor.');
         }
 
         return $this->list;
@@ -39,7 +36,7 @@ class DataListProcessor extends AbstractProcessor
      * Execute deletion of records
      *
      * @return int Number of records deleted
-     * @throws \Exception
+     * @throws Exception
      */
     public function process(): int
     {
@@ -58,11 +55,13 @@ class DataListProcessor extends AbstractProcessor
      * Get name of processor
      *
      * @return string Name of processor
-     * @throws \Exception
+     * @throws Exception
      */
+    #[Override]
     public function getName(): string
     {
-        if ($name = parent::getName()) {
+        $name = parent::getName();
+        if ($name !== '' && $name !== '0') {
             return $name;
         }
 

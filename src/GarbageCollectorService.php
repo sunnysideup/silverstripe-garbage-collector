@@ -2,6 +2,8 @@
 
 namespace SilverStripe\GarbageCollector;
 
+use Traversable;
+use Exception;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Config\Configurable;
@@ -50,7 +52,7 @@ class GarbageCollectorService
      */
     public static function inst()
     {
-        return self::$instance ? self::$instance : self::$instance = Injector::inst()->get(self::class);
+        return self::$instance ?: self::$instance = Injector::inst()->get(self::class);
     }
 
     /**
@@ -104,7 +106,7 @@ class GarbageCollectorService
         $processors = $this->getProcessors($collector);
 
         // If no processors are present, skip.
-        if (empty($processors)) {
+        if ($processors === []) {
             $this->logger->notice('No processors registered with Collector');
             return;
         }
@@ -123,13 +125,14 @@ class GarbageCollectorService
      */
     public function processCollection($collection, array $processors)
     {
-        if (empty($processors)) {
+        if ($processors === []) {
             $this->logger->notice('No Processors provided for Collection');
             return;
         }
+
         $dataList = Injector::inst()->get(DataListProcessor::class)->getImplementorClass();
 
-        if (is_array($collection) || $collection instanceof \Traversable 
+        if (is_array($collection) || $collection instanceof Traversable 
             && !$collection instanceof DataObject
             && !isset($processors[$dataList])) {
             // If traversable object is provided, loop through its items to process, except for things that need to be processed by DataListProcessor
@@ -145,8 +148,8 @@ class GarbageCollectorService
                         $proc = Injector::inst()->create($processor, $collection);
                         $records = $proc->process();
 
-                        $this->logger->info(sprintf('Processed %d records for %s using %s', $records, get_class($collection), $proc->getName()));
-                    } catch (\Exception $e) {
+                        $this->logger->info(sprintf('Processed %d records for %s using %s', $records, $collection::class, $proc->getName()));
+                    } catch (Exception $e) {
                         // Log failures and continue;
                         // TODO: Stop re-processing of failed deletion records and expose it for audit.
                         $this->logger->error(sprintf('Unable to process records: "%s"', $e->getMessage()));
@@ -158,7 +161,7 @@ class GarbageCollectorService
             }
 
             // No processor was able to be found.
-            $this->logger->notice(sprintf('Unable to find processor for %s', get_class($collection)));
+            $this->logger->notice(sprintf('Unable to find processor for %s', $collection::class));
         }
     }
 }

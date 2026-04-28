@@ -20,8 +20,8 @@ class FluentVersionedCollectorExtension extends Extension
     public function updateGetRecordsQuery(SQLSelect &$query, string $class)
     {
         if ($this->isLocalised($class)) {
-            $mainTable = $this->owner->getTableNameForClass($class);
-            $baseTable = sprintf('"%s"', $this->owner->getVersionTableName($mainTable));
+            $mainTable = $this->getOwner()->getTableNameForClass($class);
+            $baseTable = sprintf('"%s"', $this->getOwner()->getVersionTableName($mainTable));
 
             $localisedTableRaw = $this->getVersionLocalisedTableName($mainTable);
             $localisedTable = sprintf('"%s"', $localisedTableRaw);
@@ -76,12 +76,10 @@ class FluentVersionedCollectorExtension extends Extension
      */
     public function updateGetVersionsQuery(SQLSelect &$query, string $class, array $item)
     {
-        $locale = array_key_exists('locale', $item)
-                    ? $item['locale']
-                    : null;
+        $locale = $item['locale'] ?? null;
 
-        $mainTable = $this->owner->getTableNameForClass($class);
-        $baseTable = sprintf('"%s"', $this->owner->getVersionTableName($mainTable));
+        $mainTable = $this->getOwner()->getTableNameForClass($class);
+        $baseTable = sprintf('"%s"', $this->getOwner()->getVersionTableName($mainTable));
 
         if ($locale) {
             $localisedTableRaw = $this->getVersionLocalisedTableName($mainTable);
@@ -144,7 +142,7 @@ class FluentVersionedCollectorExtension extends Extension
      */
     public function updateDeleteVersionsQuery(SQLDelete &$query, string $class)
     {
-        $tables = $this->owner->getTablesListForClass($class);
+        $tables = $this->getOwner()->getTablesListForClass($class);
         $baseTable = sprintf('"%s"', $tables['base'][0]);
         $localisedTables = $tables['localised'];
 
