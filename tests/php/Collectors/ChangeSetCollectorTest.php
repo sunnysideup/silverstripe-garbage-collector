@@ -2,6 +2,7 @@
 
 namespace SilverStripe\GarbageCollector\Tests\Collectors;
 
+use Exception;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GarbageCollector\Tests\CargoShip;
 use SilverStripe\ORM\DataObject;
@@ -64,18 +65,20 @@ class ChangeSetCollectorTest extends SapphireTest
         if ($modifyDate) {
             $mockDate = $mockDate->modify($modifyDate);
         }
+
         DBDatetime::set_mock_now($mockDate);
 
         $records = Config::withConfig(function (MutableConfigCollectionInterface $config) use ($deletion_limit) {
             if (isset($deletion_limit)) {
                 $config->set(ChangeSetCollector::class, 'deletion_limit', $deletion_limit);
             }
+
             $collector = new ChangeSetCollector();
             return $collector->getCollections();
         });
 
         $this->assertCount(count($expected), $records);
-        if (count($expected) === 0) {
+        if ($expected === []) {
             return;
         }
 
@@ -113,7 +116,7 @@ class ChangeSetCollectorTest extends SapphireTest
     /**
      * @param DataObject|Versioned $model
      * @throws ValidationException
-     * @throws \Exception
+     * @throws Exception
      */
     private function createTestVersions(DataObject $model): void
     {

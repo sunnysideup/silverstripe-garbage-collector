@@ -2,6 +2,8 @@
 
 namespace SilverStripe\GarbageCollector\Tests\Jobs;
 
+use Override;
+use stdClass;
 use Exception;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GarbageCollector\CollectorInterface;
@@ -27,6 +29,7 @@ class GarbageCollectorJobTest extends SapphireTest
         CargoShip::class,
     ];
 
+    #[Override]
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
@@ -55,6 +58,7 @@ class GarbageCollectorJobTest extends SapphireTest
         $job = new GarbageCollectorJob($mockCollector);
 
         $job->setup();
+
         $data = $job->getJobData();
 
         $this->assertEquals($mockCollector, $data->jobData->collector);
@@ -96,7 +100,7 @@ class GarbageCollectorJobTest extends SapphireTest
         $mockCollector = $this->createMock(CollectorInterface::class);
         $mockCollector->expects($this->once())
                       ->method('getCollections')
-                      ->will($this->returnValue([[new \stdClass()]]));
+                      ->will($this->returnValue([[new stdClass()]]));
 
         $mockCollector->expects($this->once())
                       ->method('getProcessors')

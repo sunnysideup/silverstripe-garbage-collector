@@ -31,7 +31,7 @@ class RawSQLProcessorTest extends SapphireTest
         $query = new RawSQL('DROP TABLE "Test_Table"');
 
         // Ensure table exists
-        $result = DB::query('SHOW TABLES LIKE \'Test_Table\'')->column();
+        $result = DB::query("SHOW TABLES LIKE 'Test_Table'")->column();
         $this->assertCount(1, $result);
 
         // Use RawSQLProcessor to DROP the table
@@ -39,7 +39,7 @@ class RawSQLProcessorTest extends SapphireTest
         $count = $processor->process();
 
         // Confirm table has actually been dropped.
-        $result = DB::query('SHOW TABLES LIKE \'Test_Table\'')->column();
+        $result = DB::query("SHOW TABLES LIKE 'Test_Table'")->column();
 
         // 1 table should have been removed
         $this->assertEquals(1, $count);

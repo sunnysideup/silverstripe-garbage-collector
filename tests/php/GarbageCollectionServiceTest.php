@@ -2,6 +2,9 @@
 
 namespace SilverStripe\GarbageCollector\Tests;
 
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
+use stdClass;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\GarbageCollector\CollectorInterface;
@@ -25,16 +28,19 @@ class GarbageCollectorServiceTest extends SapphireTest
     ];
 
     private $service;
+
     private $logger;
+
     private $mockCollector1;
+
     private $mockCollector2;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->logger = new \Monolog\Handler\TestHandler();
+        $this->logger = new TestHandler();
 
         $this->service = GarbageCollectorService::inst();
-        $this->service->setLogger(new \Monolog\Logger('TestLogger', [
+        $this->service->setLogger(new Logger('TestLogger', [
             $this->logger
         ]));
 
@@ -120,7 +126,7 @@ class GarbageCollectorServiceTest extends SapphireTest
         $this->mockCollector1->expects($this->once())
                              ->method('getCollections')
                              ->will($this->returnValue([
-                                 [ new \stdClass() ]
+                                 [ new stdClass() ]
                              ]));
 
         Config::withConfig(function (MutableConfigCollectionInterface $config) {

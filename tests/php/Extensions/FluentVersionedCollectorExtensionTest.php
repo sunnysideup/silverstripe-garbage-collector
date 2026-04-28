@@ -2,6 +2,7 @@
 
 namespace SilverStripe\GarbageCollector\Tests\Extensions;
 
+use Override;
 use SilverStripe\GarbageCollector\Collectors\VersionedCollector;
 use SilverStripe\GarbageCollector\Extensions\FluentVersionedCollectorExtension;
 use SilverStripe\GarbageCollector\Tests\CargoShip;
@@ -54,6 +55,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
         ]
     ];
 
+    #[Override]
     protected function setUp(): void
     {
         FluentState::singleton()->withState(function (FluentState $state): void {
@@ -73,6 +75,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
      * @throws ValidationException
      * @dataProvider collectionsProvider
      */
+    #[Override]
     public function testGetCollections(
         string $id,
         string $modifyDate = null,
@@ -89,6 +92,7 @@ class FluentVersionedCollectorExtensionTest extends VersionedCollectorTest
         });
     }
 
+    #[Override]
     public function collectionsProvider(): array
     {
         return [

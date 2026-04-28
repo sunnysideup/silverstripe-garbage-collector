@@ -60,7 +60,7 @@ class ObsoleteTableCollectorTest extends SapphireTest
         // We expect 2 drop statements to exist
         $this->assertCount(2, $records);
 
-        $this->assertEquals('DROP TABLE \'_obsolete_Test_Table2\'', $records[0]->sql());
-        $this->assertEquals('DROP TABLE \'_obsolete_Test_Table3\'', $records[1]->sql());
+        $this->assertEquals("DROP TABLE '_obsolete_Test_Table2'", $records[0]->sql());
+        $this->assertEquals("DROP TABLE '_obsolete_Test_Table3'", $records[1]->sql());
     }
 }
